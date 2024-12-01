@@ -40,12 +40,12 @@ if st.button("Рассчитать"):
         gvs_podogrev +
         elektroenergiya
     )
-    st.success(f"Сумма за коммунальные услуги в {month}.{year}: {total_sum:.2f} руб.")
+    st.success(f"Сумма за коммунальные услуги в {month} {year}: {total_sum:.2f} руб.")
 
     # Добавление данных в хранилище
     if st.button("Сохранить результат"):
         st.session_state["data_store"].append({"year": year, "month": month, "total": total_sum})
-        st.info(f"Данные за {month}.{year} сохранены.")
+        st.info(f"Данные за {month} {year} сохранены.")
 
 # Показ графика
 if st.session_state["data_store"]:
