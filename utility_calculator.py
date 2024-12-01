@@ -40,7 +40,7 @@ if st.button("Рассчитать"):
         gvs_podogrev +
         elektroenergiya
     )
-    st.success(f"Сумма за коммунальные услуги в {month:02d}.{year}: {total_sum:.2f} руб.")
+    st.success(f"Сумма за коммунальные услуги в {month}.{year}: {total_sum:.2f} руб.")
 
     # Добавление данных в хранилище
     if st.button("Сохранить результат"):
