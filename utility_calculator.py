@@ -15,6 +15,7 @@ current_month = datetime.now().month
 
 # Выбор года с предустановленным текущим годом
 year = st.selectbox("Выберите год:", range(2020, 2031), index=(current_year - 2020))
+
 # Выбор месяца с помощью радиокнопок
 month = st.radio(
     "Выберите месяц:",
@@ -31,6 +32,12 @@ hvs_dlya_gvs = st.number_input("ХВС для ГВС, руб.:", min_value=0.0, 
 gvs_podogrev = st.number_input("ГВС подогрев, руб.:", min_value=0.0, step=0.1)
 elektroenergiya = st.number_input("Электроэнергия, руб.:", min_value=0.0, step=0.1)
 
+# Словарь для преобразования месяца в число
+month_to_number = {
+    "Январь": 1, "Февраль": 2, "Март": 3, "Апрель": 4, "Май": 5, "Июнь": 6,
+    "Июль": 7, "Август": 8, "Сентябрь": 9, "Октябрь": 10, "Ноябрь": 11, "Декабрь": 12
+}
+
 # Расчет общей суммы
 if st.button("Рассчитать"):
     total_sum = (
@@ -43,18 +50,24 @@ if st.button("Рассчитать"):
     st.success(f"Сумма за коммунальные услуги в {month} {year}: {total_sum:.2f} руб.")
 
     # Добавление данных в хранилище
-    if st.button("Сохранить результат"):
-        st.session_state["data_store"].append({"year": year, "month": month, "total": total_sum})
-        st.info(f"Данные за {month} {year} сохранены.")
+    st.session_state["data_store"].append({
+        "year": year,
+        "month": month_to_number[month],  # Сохраняем месяц как число
+        "total": total_sum
+    })
+    st.info(f"Данные за {month} {year} сохранены.")
 
 # Показ графика
 if st.session_state["data_store"]:
+    # Преобразование данных в DataFrame
     data_df = pd.DataFrame(st.session_state["data_store"])
-    data_df["date"] = pd.to_datetime(data_df[["year", "month"]].assign(day=1))
-    data_df = data_df.sort_values("date")
-    data_df.set_index("date", inplace=True)
+    data_df["date"] = pd.to_datetime(data_df[["year", "month"]].assign(day=1))  # Создаем дату
+    data_df = data_df.sort_values("date")  # Сортируем по дате
+    data_df.set_index("date", inplace=True)  # Устанавливаем дату как индекс
 
-    # График с использованием Streamlit
-    st.line_chart(data_df["total"], use_container_width=True, title="История коммунальных платежей")
+    # Отображение графика
+    st.subheader("История коммунальных платежей")
+    st.line_chart(data_df["total"])
+
 
 
