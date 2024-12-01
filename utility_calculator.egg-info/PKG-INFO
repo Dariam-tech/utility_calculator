@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: utility-calculator
+Version: 0.1.0
+Summary: Streamlit application for calculating utility payments.
+Author-email: Your Name <your.email@example.com>
+Requires-Dist: streamlit>=1.25.0
+Requires-Dist: pandas>=1.5.3
