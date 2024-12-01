@@ -7,7 +7,7 @@ st.title("Расчет коммунальных платежей")
 
 # Хранилище данных
 if "data_store" not in st.session_state:
-    st.session_state["data_store"] = []
+    st.session_state["data_store"] = []  # Инициализация пустого хранилища
 
 # Получение текущего года и месяца
 current_year = datetime.now().year
@@ -25,18 +25,18 @@ month = st.radio(
     ]
 )
 
+# Словарь для преобразования месяца в число
+month_to_number = {
+    "Январь": 1, "Февраль": 2, "Март": 3, "Апрель": 4, "Май": 5, "Июнь": 6,
+    "Июль": 7, "Август": 8, "Сентябрь": 9, "Октябрь": 10, "Ноябрь": 11, "Декабрь": 12
+}
+
 # Ввод сумм по коммунальным услугам
 vodootvedenie = st.number_input("Водоотведение, руб.:", min_value=0.0, step=0.1)
 holodnoe_vodosnabzhenie = st.number_input("Холодное водоснабжение, руб.:", min_value=0.0, step=0.1)
 hvs_dlya_gvs = st.number_input("ХВС для ГВС, руб.:", min_value=0.0, step=0.1)
 gvs_podogrev = st.number_input("ГВС подогрев, руб.:", min_value=0.0, step=0.1)
 elektroenergiya = st.number_input("Электроэнергия, руб.:", min_value=0.0, step=0.1)
-
-# Словарь для преобразования месяца в число
-month_to_number = {
-    "Январь": 1, "Февраль": 2, "Март": 3, "Апрель": 4, "Май": 5, "Июнь": 6,
-    "Июль": 7, "Август": 8, "Сентябрь": 9, "Октябрь": 10, "Ноябрь": 11, "Декабрь": 12
-}
 
 # Расчет общей суммы
 if st.button("Рассчитать"):
@@ -49,25 +49,30 @@ if st.button("Рассчитать"):
     )
     st.success(f"Сумма за коммунальные услуги в {month} {year}: {total_sum:.2f} руб.")
 
-    # Добавление данных в хранилище
+    # Сохранение данных
     st.session_state["data_store"].append({
         "year": year,
-        "month": month_to_number[month],  # Сохраняем месяц как число
+        "month": month_to_number[month],  # Преобразование месяца в число
         "total": total_sum
     })
     st.info(f"Данные за {month} {year} сохранены.")
 
-# Показ графика
+# Показ истории и графика
 if st.session_state["data_store"]:
     # Преобразование данных в DataFrame
     data_df = pd.DataFrame(st.session_state["data_store"])
-    data_df["date"] = pd.to_datetime(data_df[["year", "month"]].assign(day=1))  # Создаем дату
-    data_df = data_df.sort_values("date")  # Сортируем по дате
-    data_df.set_index("date", inplace=True)  # Устанавливаем дату как индекс
+    data_df["date"] = pd.to_datetime(data_df[["year", "month"]].assign(day=1))  # Создание даты
+    data_df = data_df.sort_values("date")  # Сортировка по дате
+    data_df.set_index("date", inplace=True)  # Установка даты как индекса
 
-    # Отображение графика
+    # Показ истории
     st.subheader("История коммунальных платежей")
+    st.dataframe(data_df)
+
+    # Показ графика
+    st.subheader("График коммунальных платежей")
     st.line_chart(data_df["total"])
+
 
 
 
