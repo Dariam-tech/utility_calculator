@@ -45,7 +45,7 @@ if st.button("Рассчитать"):
     # Добавление данных в хранилище
     if st.button("Сохранить результат"):
         st.session_state["data_store"].append({"year": year, "month": month, "total": total_sum})
-        st.info(f"Данные за {month:02d}.{year} сохранены.")
+        st.info(f"Данные за {month}.{year} сохранены.")
 
 # Показ графика
 if st.session_state["data_store"]:
